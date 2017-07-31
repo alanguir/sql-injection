@@ -1,7 +1,7 @@
 {
     "name": "sql-scrub",
     "description": "This simple module that detects sql injection attacks in strings. extracted from https://github.com/ghafran/sql-injection",
-    "version": "0.0.6",
+    "version": "0.0.1",
     "author": "Alan Languirand <alan@13protons.com>",
     "homepage": "https://github.com/alanguir/sql-injection",
     "repository": {
@@ -30,8 +30,6 @@
         "injection",
         "sqlinjection",
         "security",
-        "express",
-        "expressjs",
         "module"
     ],
     "bugs": {

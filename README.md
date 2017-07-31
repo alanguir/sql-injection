@@ -1,21 +1,17 @@
-[![Build Status](https://secure.travis-ci.org/ghafran/sql-injection.png)](http://travis-ci.org/ghafran/sql-injection)
-[![NSP Status](https://nodesecurity.io/orgs/ghafran/projects/c6cb2b07-e84b-4985-84ca-ea057c88cadb/badge)](https://nodesecurity.io/orgs/ghafran/projects/c6cb2b07-e84b-4985-84ca-ea057c88cadb)
+[![Build Status](https://travis-ci.org/alanguir/sql-injection.svg?branch=master)](https://travis-ci.org/alanguir/sql-injection)
 
 sql-injection
 =============
 
-This express module detects sql injection attacks and stops them by sending 403 as response.
-The module checks the query string, route params, and body for any sql injection related content.
+This module is designed to give you a simple yes/no answer as to whether a particular string contains SQL commands. That you do with that information is up to you.
 
-```js
-var app = express();
-var sqlinjection = require('sql-injection');
-app.use(sqlinjection);
-```
+> NOTE: This module is still under development! Use in production at your own risk!
 
 ## Installation
 
-    $ npm install sql-injection
+```
+// coming soon
+```
 
 
 ## Usage
@@ -23,23 +19,19 @@ app.use(sqlinjection);
 code example:
 
 ```js
-var express = require('express');
-var sqlinjection = require('sql-injection');
+var hasSql = require('./lib/index.js');
 
-var app = express();
+console.log(hasSql('hi there'));
+// false
 
-app.configure(function() {
-    app.use(sqlinjection);  // add sql-injection middleware here
-});
-
-app.get('/route1', function(req, res) {
-    res.send(200, {});
-});
-app.get('/route2/:uid', function(req, res) {
-    res.send(200, {});
-});
-app.post('/route3', function(req, res) {
-    res.send(200, {});
-});
-app.listen(3000);
+console.log(hasSql("SELECT EMP_ID, LAST_NAME FROM EMPLOYEE_TBL WHERE CITY = 'DETROIT'"));
+// true
 ```
+
+## Contributing
+
+Please add to this module to help make it more robust! Pull requests welcome
+
+> This is a fork of https://github.com/ghafran/sql-injection
+
+> Base checks are extracted from [this article](http://www.symantec.com/connect/articles/detection-sql-injection-and-cross-site-scripting-attacks)
