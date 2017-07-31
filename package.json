@@ -1,12 +1,12 @@
 {
-    "name": "sql-injection",
-    "description": "This express module detects sql injection attacks and stops them with 403 http status code.",
+    "name": "sql-scrub",
+    "description": "This simple module that detects sql injection attacks in strings. extracted from https://github.com/ghafran/sql-injection",
     "version": "0.0.6",
-    "author": "Ghafran Abbas <ghafranabbas@gmail.com>",
-    "homepage": "https://github.com/ghafran/sql-injection",
+    "author": "Alan Languirand <alan@13protons.com>",
+    "homepage": "https://github.com/alanguir/sql-injection",
     "repository": {
         "type": "git",
-        "url": "https://github.com/ghafran/sql-injection"
+        "url": "https://github.com/alanguir/sql-injection"
     },
     "main": "./lib/index",
     "scripts": {
@@ -23,9 +23,7 @@
         "grunt-contrib-watch": "~1.0.0",
         "grunt-simple-mocha": "~0.4.1",
         "grunt-bump": "~0.8.0",
-        "mocha": "~3.3.0",
-        "supertest": "~3.0.0",
-        "express": "~4.15.2"
+        "mocha": "~3.3.0"
     },
     "keywords": [
         "sql",
@@ -37,7 +35,7 @@
         "module"
     ],
     "bugs": {
-        "url": "https://github.com/ghafran/sql-injection/issues"
+        "url": "https://github.com/alanguir/sql-injection/issues"
     },
     "directories": {
         "test": "test"

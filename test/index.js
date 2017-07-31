@@ -1,77 +1,50 @@
 process.env.NODE_ENV = 'test';
 
-var request = require('supertest');
-var xpect = require('chai').expect;
-var express = require('express');
-var app = express();
-var sqlinjection = require('../lib/index');
+let chai = require('chai');
+chai.should();
 
-describe('basic tests', function() {
+let check = require('../lib/index.js');
 
-    it('returns function', function(done) {
+let testQueries = [
+  "SELECT * FROM EMPLOYEE_TBL;",
+  "SELECT EMP_ID FROM EMPLOYEE_TBL;",
+  "SELECT EMP_ID FROM EMPLOYEE_TBL;",
+  "SELECT EMP_ID, LAST_NAME FROM EMPLOYEE_TBL;",
+  "SELECT EMP_ID, LAST_NAME FROM EMPLOYEE_TBL WHERE EMP_ID = '333333333';",
+  "SELECT EMP_ID, LAST_NAME FROM EMPLOYEE_TBL WHERE CITY = 'INDIANAPOLIS' ORDER BY EMP_ID;",
+  "SELECT EMP_ID, LAST_NAME FROM EMPLOYEE_TBL WHERE CITY = 'INDIANAPOLIS' ORDER BY EMP_ID, LAST_NAME DESC;",
+  "SELECT EMP_ID, LAST_NAME FROM EMPLOYEE_TBL WHERE CITY = 'INDIANAPOLIS' ORDER BY 1;",
+  "SELECT EMP_ID, LAST_NAME FROM EMPLOYEE_TBL WHERE CITY = 'INDIANAPOLIS' ORDER BY 2, 1;",
+  "Select * from Employee where Rowid= select max(Rowid) from Employee;",
+  "Select * from Employee where Rownum <= 5;",
+  "select * from (Select * from Employee e order by rowid desc) where rownum <=5;",
+  "select distinct salary from employee a where 3 >= (select count(distinct salary) from emp loyee b where a.salary <= b.salary) order by a.salary desc;",
+  "Select * from(Select rownum as rno,E.* from Employee E) where Mod(rno,2)=1;"
+]
 
-        xpect(sqlinjection).to.be.a('function');
-        done();
+let falsePositives = [
+  'select an option from the following menu'
+]
+
+describe('sql-scrub', function() {
+
+    it('empty string', function() {
+        let str = '';
+        check(str).should.not.be.ok;
     });
-});
 
-describe('supertests', function() {
-
-    before(function(done) {
-
-        app.use(sqlinjection);
-        app.get('/test', function(req, res) {
-            res.status(200).send({});
+    describe('test queries', function(){
+      testQueries.forEach(function(q){
+        it('should flag: ' + q, function() {
+            check(q).should.be.ok;
         });
-        app.get('/users/:uid', function(req, res) {
-            res.status(200).send({});
+      });
+    });
+    describe('falsePositives', function(){
+      falsePositives.forEach(function(q){
+        it('should flag: ' + q, function() {
+            check(q).should.be.ok;
         });
-        app.post('/body', function(req, res) {
-            res.status(200).send({});
-        });
-        done();
-    });
-
-    after(function(done) {
-        done();
-    });
-
-    it('can call app', function(done) {
-
-        request(app).get('/test').expect(200, done);
-    });
-
-    it('querystring no sql', function(done) {
-
-        request(app).get('/test?attack=noattack').expect(200, done);
-    });
-
-    it('param no sql', function(done) {
-
-        request(app).get('/users/1').expect(200, done);
-    });
-
-    it('body no sql', function(done) {
-
-        request(app).post('/body').send({
-            stuff: 'somestuff'
-        }).expect(200, done);
-    });
-
-    it('querystring with sql', function(done) {
-
-        request(app).get('/test?attack=' + escape('WHERE field = \'anything\' OR \'x\'=\'x\'\'')).expect(403, done);
-    });
-
-    it('param with sql', function(done) {
-
-        request(app).get('/users/' + escape('WHERE field = \'anything\' OR \'x\'=\'x\'\'')).expect(403, done);
-    });
-
-    it('body with sql', function(done) {
-
-        request(app).post('/body').send({
-            stuff: 'WHERE field = \'anything\' OR \'x\'=\'x\'\''
-        }).expect(403, done);
+      });
     });
 });
